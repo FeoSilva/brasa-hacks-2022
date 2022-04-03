@@ -50,10 +50,14 @@ async function verifyLocationForecast() {
         },
       })
       if (inProgressOcurrenceByLocation) {
-        // If ocurrence by ID was found, indicates that user location already have an ocurrence
+        // If ocurrence by range location was found, indicates that user location already have an ocurrence
         // So just need to send via Whatsapp
         console.log('Ocurrence finded by location')
         // TODO: Send to Weni.ai api
+
+        // TODO: Add userId to location. usersIds should be an array
+        // inProgressOcurrenceByLocation.usersIds.push(user._id)
+        // await inProgressOcurrenceByLocation.save
         return
       }
 
@@ -67,7 +71,7 @@ async function verifyLocationForecast() {
         console.log('Creating user first ocurrence')
         // TODO: Send to Weni.ai api
         const ocurrence = new Ocurrence({
-          usersIds: user._id,
+          usersIds: [user._id],
           location: user.location,
           status: 'IN_PROGRESS',
         })

@@ -25,6 +25,7 @@
     ]
   },
   "dependencies": {
+    "agenda": "^4.2.1",
     "axios": "^0.26.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",

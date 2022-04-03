@@ -7,6 +7,7 @@ import bodyParser from 'body-parser'
 const app = express()
 
 import mongoSetup from '@app/mongo'
+import jobsSetup from '@app/jobs'
 
 import corsMiddleware from '@app/middlewares/cors'
 import httpsMiddleware from '@app/middlewares/https'
@@ -21,6 +22,7 @@ import whatsappFunc from '@app/routes/v1/user/:whatsapp/get/func'
 
 async function init() {
   await mongoSetup()
+  await jobsSetup()
 
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: false }))

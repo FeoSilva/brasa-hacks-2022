@@ -33,6 +33,13 @@ export default async function func(req, res) {
       address: formatted_address,
     })
   } catch (error) {
-    res.status(error.statusCode || 500).send(error || 'Internal server error')
+    const status = error.statusCode || 500
+    res.status(status)
+
+    if (status >= 500) {
+      res.send(error.stack || 'Internal server error')
+    } else {
+      res.send(error)
+    }
   }
 }

@@ -55,9 +55,8 @@ async function verifyLocationForecast() {
         console.log('Ocurrence finded by location')
         // TODO: Send to Weni.ai api
 
-        // TODO: Add userId to location. usersIds should be an array
-        // inProgressOcurrenceByLocation.usersIds.push(user._id)
-        // await inProgressOcurrenceByLocation.save
+        inProgressOcurrenceByLocation.usersIds.push(user._id)
+        await inProgressOcurrenceByLocation.save()
         return
       }
 

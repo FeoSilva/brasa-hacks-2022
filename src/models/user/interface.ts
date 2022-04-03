@@ -8,6 +8,7 @@ interface iUser extends Document {
   zipcode: string
   address: string
   whatsapp: string
+  isDangerous: boolean
   createdAt: Date
   updatedAt: Date
 }

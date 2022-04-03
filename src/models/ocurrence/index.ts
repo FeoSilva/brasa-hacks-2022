@@ -4,7 +4,7 @@ import { Schema, Model, model } from 'mongoose'
 export const OcurrenceSchema = new Schema<iOcurrence>(
   {
     usersIds: {
-      type: Schema.Types.ObjectId,
+      type: [Schema.Types.ObjectId],
     },
 
     location: {

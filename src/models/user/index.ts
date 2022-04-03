@@ -22,6 +22,11 @@ export const UserSchema = new Schema<iUser>(
       type: String,
       required: true,
     },
+
+    isDangerous: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },

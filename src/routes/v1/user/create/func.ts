@@ -3,7 +3,8 @@ import BadRequest from '@app/errors/BadRequest'
 
 export default async function func(req, res) {
   try {
-    const { latitude, longitude, zipcode, address, whatsapp } = req.body || {}
+    const { latitude, longitude, zipcode, address, whatsapp, isDangerous } =
+      req.query || {}
 
     if (!latitude) {
       throw new BadRequest(`Missing latitude`)
@@ -32,6 +33,7 @@ export default async function func(req, res) {
       zipcode,
       address,
       whatsapp: whatsapp.replace(/\D/g, ''),
+      isDangerous: Boolean(isDangerous),
     })
 
     await user.save()

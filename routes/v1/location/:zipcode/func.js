@@ -10,6 +10,7 @@ module.exports = async function (req, res) {
 
     const latitude = _.get(address, "results[0].geometry.location.lat", "")
     const longitude = _.get(address, "results[0].geometry.location.lng", "")
+    const formatted_address = _.get(address, "results[0].formatted_address", "")
 
     if(!latitude && !longitude) {
       throw new BadRequest('Invalid zipcode')
@@ -26,7 +27,8 @@ module.exports = async function (req, res) {
     res.send({
       zipcode: zipcode,
       latitude: latitude,
-      longitude: longitude
+      longitude: longitude,
+      formatted_address: formatted_address
     })
   } catch (error) {
     res.status(error.statusCode || 500).send(error || "Internal server error")

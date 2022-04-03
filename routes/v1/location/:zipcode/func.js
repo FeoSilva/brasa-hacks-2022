@@ -28,7 +28,7 @@ module.exports = async function (req, res) {
       zipcode: zipcode,
       latitude: latitude,
       longitude: longitude,
-      formatted_address: formatted_address
+      address: formatted_address
     })
   } catch (error) {
     res.status(error.statusCode || 500).send(error || "Internal server error")

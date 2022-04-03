@@ -16,7 +16,8 @@ import notFoundMiddleware from '@app/middlewares/notFound'
 
 // API Routes
 import locationFunc from '@app/routes/v1/location/:zipcode/func'
-import userFunc from '@app/routes/v1/user/:whatsapp/func'
+import userFunc from '@app/routes/v1/user/create/func'
+import whatsappFunc from '@app/routes/v1/user/:whatsapp/get/func'
 
 async function init() {
   await mongoSetup()
@@ -36,6 +37,7 @@ async function init() {
   )
   app.get('/v1/location/:zipcode', locationFunc)
   app.post('/v1/user', userFunc)
+  app.get('/v1/user/:whatsapp', whatsappFunc)
 
   app.all('*', notFoundMiddleware)
 

@@ -1,6 +1,8 @@
+import Axios from 'axios'
+
+import Ocurrence from '@app/models/ocurrence'
 import wrap from '@app/helpers/jobs/wrap'
 import User from '@app/models/user'
-import Axios from 'axios'
 
 export default function agendaDefineVerifyLocationForecast(agenda) {
   agenda.define('verifyLocationForecast', wrap(verifyLocationForecast))
@@ -12,18 +14,65 @@ const rainPossibleCodes = [
   1204, 1207, 1210, 1240, 1243, 1246, 1249, 1252, 1273, 1276,
 ]
 
+const MAX_DISTANCE_IN_METERS = 1000
+const MIN_DISTANCE_IN_METERS = 0
+
 async function verifyLocationForecast() {
   const users = await User.find().lean(true)
 
   const usersPromises = users.map(async (user) => {
     try {
+      const inProgressOcurrenceById = await Ocurrence.findOne({
+        status: 'IN_PROGRESS',
+        usersIds: user._id,
+      })
+      if (inProgressOcurrenceById) {
+        // If ocurrence by ID was found, indicates that user is already notified for this ocurrence
+        // So just need to skip
+        console.log('Ocurrence finded by id')
+        return
+      }
+
+      const inProgressOcurrenceByLocation = await Ocurrence.findOne({
+        status: 'IN_PROGRESS',
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [
+                user.location.coordinates[0],
+                user.location.coordinates[1],
+              ],
+            },
+            $maxDistance: MAX_DISTANCE_IN_METERS,
+            $minDistance: MIN_DISTANCE_IN_METERS,
+          },
+        },
+      })
+      if (inProgressOcurrenceByLocation) {
+        // If ocurrence by ID was found, indicates that user location already have an ocurrence
+        // So just need to send via Whatsapp
+        console.log('Ocurrence finded by location')
+        // TODO: Send to Weni.ai api
+        return
+      }
+
+      // If none ocurrence was founded, its needed to get weather data
+      // And if needed, send to whatsapp and create ocurrence
       const weatherUrl = `https://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHERAPI_KEY}&q=${user.location.coordinates[1]},${user.location.coordinates[0]}&days=1&aqi=no&alerts=no`
       const { data } = await Axios.get(weatherUrl)
 
       const dayCode = Number(data.forecast.forecastday[0].day.condition.code)
       if (rainPossibleCodes.includes(dayCode)) {
+        console.log('Creating user first ocurrence')
         // TODO: Send to Weni.ai api
-        console.log('sending')
+        const ocurrence = new Ocurrence({
+          usersIds: user._id,
+          location: user.location,
+          status: 'IN_PROGRESS',
+        })
+        await ocurrence.save()
+        return
       }
     } catch (e) {
       // With one fails, should not stop all users

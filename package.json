@@ -4,7 +4,8 @@
     "lint": "eslint . --ext .ts --fix",
     "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
     "start:watch": "ts-node-dev -r tsconfig-paths/register --watch src --respawn --transpile-only src/index.ts",
-    "start": "ts-node-dev -r tsconfig-paths/register src/index.ts"
+    "start:local": "ts-node-dev -r tsconfig-paths/register src/index.ts",
+    "start": "npm run-script build && node dist/index.js"
   },
   "husky": {
     "hooks": {

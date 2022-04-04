@@ -1,3 +1,4 @@
+import uuid from 'uuid'
 import iOcurrence from './interface'
 import { Schema, Model, model } from 'mongoose'
 
@@ -16,6 +17,12 @@ export const OcurrenceSchema = new Schema<iOcurrence>(
       type: String,
       required: true,
       enum: ['IN_PROGRESS', 'FINISHED'],
+    },
+
+    uploadToken: {
+      type: String,
+      required: true,
+      default: uuid.v4(),
     },
   },
   {

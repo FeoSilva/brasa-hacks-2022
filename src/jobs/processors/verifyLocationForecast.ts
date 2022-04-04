@@ -17,6 +17,8 @@ const rainPossibleCodes = [
 const MAX_DISTANCE_IN_METERS = 1000
 const MIN_DISTANCE_IN_METERS = 0
 
+const WENI_FLOW = '1ce08c25-5f63-4df0-b491-25431fd8ad3c'
+
 async function verifyLocationForecast() {
   const users = await User.find().lean(true)
 
@@ -53,7 +55,21 @@ async function verifyLocationForecast() {
         // If ocurrence by range location was found, indicates that user location already have an ocurrence
         // So just need to send via Whatsapp
         console.log('Ocurrence finded by location')
-        // TODO: Send to Weni.ai api
+        await Axios.post(
+          'https://new.push.al/api/v2/flow_starts.json',
+          {
+            flow: WENI_FLOW,
+            urns: [`whatsapp:${user.whatsapp}`],
+            params: {
+              user,
+            },
+          },
+          {
+            headers: {
+              Authorization: process.env.WENI_TOKEN,
+            },
+          }
+        )
 
         inProgressOcurrenceByLocation.usersIds.push(user._id)
         await inProgressOcurrenceByLocation.save()
@@ -68,7 +84,22 @@ async function verifyLocationForecast() {
       const dayCode = Number(data.forecast.forecastday[0].day.condition.code)
       if (rainPossibleCodes.includes(dayCode)) {
         console.log('Creating user first ocurrence')
-        // TODO: Send to Weni.ai api
+        await Axios.post(
+          'https://new.push.al/api/v2/flow_starts.json',
+          {
+            flow: WENI_FLOW,
+            urns: [`whatsapp:${user.whatsapp}`],
+            params: {
+              user,
+            },
+          },
+          {
+            headers: {
+              Authorization: process.env.WENI_TOKEN,
+            },
+          }
+        )
+
         const ocurrence = new Ocurrence({
           usersIds: [user._id],
           location: user.location,
@@ -79,7 +110,7 @@ async function verifyLocationForecast() {
       }
     } catch (e) {
       // With one fails, should not stop all users
-      // TODO: Send to sentry or other related platform
+      // TODO: Send to some tracking error platform
       console.log(`Jobs fail: `, e.isAxiosError ? e.response.data : e)
     }
   })

@@ -4,7 +4,8 @@
     "lint": "eslint . --ext .ts --fix",
     "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
     "start:watch": "ts-node-dev -r tsconfig-paths/register --watch src --respawn --transpile-only src/index.ts",
-    "start": "ts-node-dev -r tsconfig-paths/register src/index.ts"
+    "start:local": "ts-node-dev -r tsconfig-paths/register src/index.ts",
+    "start": "npm run-script build && node dist/index.js"
   },
   "husky": {
     "hooks": {
@@ -31,6 +32,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "form-data": "^4.0.0",
     "lodash": "^4.17.21",
     "mongoose": "^5.5.7",
     "morgan": "^1.10.0",

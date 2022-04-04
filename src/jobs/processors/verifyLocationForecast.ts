@@ -62,6 +62,7 @@ async function verifyLocationForecast() {
             urns: [`whatsapp:${user.whatsapp}`],
             params: {
               user,
+              uploadToken: inProgressOcurrenceByLocation.uploadToken,
             },
           },
           {
@@ -84,6 +85,12 @@ async function verifyLocationForecast() {
       const dayCode = Number(data.forecast.forecastday[0].day.condition.code)
       if (rainPossibleCodes.includes(dayCode)) {
         console.log('Creating user first ocurrence')
+        const ocurrence = new Ocurrence({
+          usersIds: [user._id],
+          location: user.location,
+          status: 'IN_PROGRESS',
+        })
+
         await Axios.post(
           'https://new.push.al/api/v2/flow_starts.json',
           {
@@ -91,6 +98,7 @@ async function verifyLocationForecast() {
             urns: [`whatsapp:${user.whatsapp}`],
             params: {
               user,
+              uploadToken: ocurrence.uploadToken,
             },
           },
           {
@@ -99,12 +107,6 @@ async function verifyLocationForecast() {
             },
           }
         )
-
-        const ocurrence = new Ocurrence({
-          usersIds: [user._id],
-          location: user.location,
-          status: 'IN_PROGRESS',
-        })
         await ocurrence.save()
         return
       }

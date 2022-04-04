@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
+import multer from 'multer'
 import morgan from 'morgan'
 import express from 'express'
 import bodyParser from 'body-parser'
@@ -19,6 +20,7 @@ import notFoundMiddleware from '@app/middlewares/notFound'
 import locationFunc from '@app/routes/v1/location/:zipcode/func'
 import userFunc from '@app/routes/v1/user/create/func'
 import whatsappFunc from '@app/routes/v1/user/:whatsapp/get/func'
+import uploadFunc from '@app/routes/v1/ocurrence/upload/func'
 
 async function init() {
   await mongoSetup()
@@ -29,7 +31,6 @@ async function init() {
   app.use(morgan('dev'))
   app.use(corsMiddleware)
   app.use(httpsMiddleware)
-  app.use(privateMiddleware)
 
   app.get('/', (req, res) =>
     res.json({
@@ -37,9 +38,11 @@ async function init() {
       now: new Date(),
     })
   )
-  app.get('/v1/location/:zipcode', locationFunc)
-  app.post('/v1/user', userFunc)
-  app.get('/v1/user/:whatsapp', whatsappFunc)
+  app.get('/v1/location/:zipcode', privateMiddleware, locationFunc)
+  app.post('/v1/user', privateMiddleware, userFunc)
+  app.get('/v1/user/:whatsapp', privateMiddleware, whatsappFunc)
+
+  app.post('/v1/upload', multer().single('file'), uploadFunc)
 
   app.all('*', notFoundMiddleware)
 

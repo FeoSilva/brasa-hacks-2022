@@ -1,4 +1,4 @@
-import uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import iOcurrence from './interface'
 import { Schema, Model, model } from 'mongoose'
 
@@ -22,7 +22,7 @@ export const OcurrenceSchema = new Schema<iOcurrence>(
     uploadToken: {
       type: String,
       required: true,
-      default: uuid.v4(),
+      default: uuidv4,
     },
   },
   {

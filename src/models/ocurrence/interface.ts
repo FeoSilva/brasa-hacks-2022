@@ -7,6 +7,7 @@ interface iOcurrence extends Document {
     coordinates: number[]
   }
   status: string
+  uploadToken: string
   createdAt: Date
   updatedAt: Date
 }
